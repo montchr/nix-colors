@@ -1,7 +1,9 @@
 { lib, pkgs, config, ... }:
 
 with lib;
-let cfg = config.colorscheme;
+
+let
+  cfg = config.colorscheme;
 in {
   options.nix-colors.colorscheme = mkOption { default = null; };
   options.colorscheme = {
@@ -28,10 +30,10 @@ in {
     };
     kind = mkOption {
       type = types.enum [ "dark" "light" ];
-      default = if builtins.substring 0 1 cfg.colors.base00 < "5" then
-        "dark"
+      default = if builtins.substring 0 1 cfg.colors.base00 > "5" then
+        "light"
       else
-        "light";
+        "dark";
       description = ''
         Whether the scheme is dark or light
       '';
@@ -64,14 +66,6 @@ in {
       "base0F"
     ]);
 
-    generateFromPicture = mkOption {
-      type = types.nullOr types.path;
-      default = null;
-      description = ''
-        If set, generates a scheme using the given picture.
-        If using flakes, the picture must be inside the same repository.
-      '';
-    };
   };
   config = lib.mkIf (config.nix-colors.colorscheme != null) {
     assertions = [
